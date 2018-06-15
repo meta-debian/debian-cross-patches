@@ -1,0 +1,73 @@
+Description: Use wrong pkgconfig file for configuration
+	When cross compiling the source code, path to pkgconfig file
+	and program to built C++ programs need to consistent with host-specific.
+
+diff --git a/gip-1.7.0-1/debian/patches/build_file-cross.diff b/gip-1.7.0-1/debian/patches/build_file-cross.diff
+new file mode 100644
+index 0000000..9cc0c63
+--- /dev/null
++++ b/gip-1.7.0-1/debian/patches/build_file-cross.diff
+@@ -0,0 +1,30 @@
++diff --git a/gip-1.7.0-1/installer/build_files.sh b/gip-1.7.0-1/installer/build_files.sh
++index d3138ec..10d28e0 100755
++--- a/gip-1.7.0-1/installer/build_files.sh
+++++ b/gip-1.7.0-1/installer/build_files.sh
++@@ -27,7 +27,7 @@ compile_file() {
++   # Compile.
++   echo Compiling: $FILE...
++   set -x
++-  g++ -fPIC $CFLAGS -c $FILE -o $OBJECTFILE
+++  $CXX -fPIC $CFLAGS -c $FILE -o $OBJECTFILE
++   ERR="$?"
++   set +x
++   if [ "$ERR" -ne "0" ]; then
++@@ -122,14 +122,14 @@ fi
++ if [ "$SHARED" = "" ]; then
++   # Link as an executable.
++   set -x
++-  g++ -pie -fPIE $CFLAGS -o $OUTFILE $OBJECTFILES $LFLAGS
+++  $CXX -pie -fPIE $CFLAGS -o $OUTFILE $OBJECTFILES $LFLAGS
++   ERR="$?"
++   set +x
++ else
++   # Link as a shared library.
++   SHAREDNAME=`echo $OUTFILE | sed 's/\..*//'`
++   set -x
++-  g++ -shared -Wl,-soname,$SHAREDNAME $CFLAGS -o $OUTFILE $OBJECTFILES $LFLAGS
+++  $CXX -shared -Wl,-soname,$SHAREDNAME $CFLAGS -o $OUTFILE $OBJECTFILES $LFLAGS
++   ERR="$?"
++   set +x
++ fi
+diff --git a/gip-1.7.0-1/debian/patches/series b/gip-1.7.0-1/debian/patches/series
+index e8b6966..014ef35 100644
+--- a/gip-1.7.0-1/debian/patches/series
++++ b/gip-1.7.0-1/debian/patches/series
+@@ -7,3 +7,4 @@
+ 70-remove-header.diff
+ 71-debian-hardening.diff
+ 72-desktop-file.diff
++73-build_file-cross.diff
+diff --git a/gip-1.7.0-1/debian/rules b/gip-1.7.0-1/debian/rules
+index f832e9a..b581f92 100755
+--- a/gip-1.7.0-1/debian/rules
++++ b/gip-1.7.0-1/debian/rules
+@@ -3,6 +3,13 @@
+ 
+ CFLAGS = -Wall -g
+ 
++export CXX = g++
++
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++	PKG_CONFIG_PATH = /usr/lib/$(DEB_HOST_GNU_TYPE)/pkgconfig
++	CXX = $(DEB_HOST_GNU_TYPE)-g++
++endif
++
+ ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+ 	CFLAGS += -O0
+ else
+@@ -13,4 +20,4 @@ endif
+ 	dh $@
+ 
+ override_dh_auto_install:
+-	./build.sh --install --prefix $(CURDIR)/debian/gip/usr
++	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ./build.sh --install --prefix $(CURDIR)/debian/gip/usr

@@ -1,0 +1,15 @@
+diff --git a/mbw-1.2.2/debian/rules b/mbw-1.2.2/debian/rules
+index 4b638c1..38001b1 100755
+--- a/mbw-1.2.2/debian/rules
++++ b/mbw-1.2.2/debian/rules
+@@ -9,6 +9,10 @@
+ # Uncomment this to turn on verbose mode.
+ #export DH_VERBOSE=1
+ 
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++export	CC = $(DEB_HOST_GNU_TYPE)-gcc
++endif
++
+ CFLAGS = -Wall -g
+ 
+ ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))

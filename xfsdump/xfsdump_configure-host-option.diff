@@ -1,0 +1,13 @@
+--- xfsdump-3.1.6+nmu2/debian/rules	2017-07-25 08:37:44.652003407 +0700
++++ xfsdump-3.1.6+nmu2/debian/rules.new	2017-07-25 08:37:34.136003519 +0700
+@@ -1,7 +1,9 @@
+ #!/usr/bin/make -f
+ 
+ export DH_VERBOSE=1
+-export LOCAL_CONFIGURE_OPTIONS=CFLAGS=-D_FILE_OFFSET_BITS=64
++export LOCAL_CONFIGURE_OPTIONS=CFLAGS=-D_FILE_OFFSET_BITS=64 \
++                               --host $(DEB_HOST_GNU_TYPE) \
++                               --build $(DEB_BUILD_GNU_TYPE)
+ 
+ package=xfsdump
+ 

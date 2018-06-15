@@ -1,0 +1,24 @@
+--- libfs-1.0.7/debian/rules	2017-05-08 15:43:02.000000000 +0700
++++ libfs-1.0.7/debian/rules	2017-05-08 15:42:57.223359579 +0700
+@@ -3,11 +3,21 @@
+ # set this to the name of the main shlib's binary package
+ PACKAGE = libfs6
+ 
++# cannot run test code for malloc0returnsnull when cross compile
++ifneq ($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
++	ifeq (,$(findstring malloc0returnsnull,$(DEB_BUILD_OPTIONS)))
++		confflags += --disable-malloc0returnsnull
++	else
++		confflags += --enable-malloc0returnsnull
++	endif
++endif
++
+ %:
+ 	dh $@ --with autoreconf --parallel
+ 
+ override_dh_auto_configure:
+ 	dh_auto_configure -- \
++		$(confflags) \
+ 		--disable-silent-rules
+ 
+ override_dh_install:

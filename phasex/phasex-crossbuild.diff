@@ -1,0 +1,19 @@
+Description: crossbuild does not support -mtune=athlon64 and -march=athlon64,
+	set --enable-arch equals empty to make empty -mtune and -march when
+	run configure
+
+diff --git a/phasex-0.14.97/debian/rules b/phasex-0.14.97/debian/rules
+index aee1ab0..6f961ca 100755
+--- a/phasex-0.14.97/debian/rules
++++ b/phasex-0.14.97/debian/rules
+@@ -6,6 +6,10 @@ ifneq (,$(findstring amd64,$(DEB_BUILD_ARCH)))
+ DEB_CONFIGURE_FLAGS_EXTRA=--enable-arch=amd64
+ endif
+ 
++ifneq ($(DEB_HOST_GNU_TYPE), $(DEB_BUILD_GNU_TYPE))
++DEB_CONFIGURE_FLAGS_EXTRA=--enable-arch=""
++endif
++
+ LDFLAGS+=-Wl,--as-needed
+ 
+ %:

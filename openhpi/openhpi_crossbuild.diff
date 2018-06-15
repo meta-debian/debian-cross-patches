@@ -1,0 +1,29 @@
+diff --git a/openhpi-3.6.1/debian/rules b/openhpi-3.6.1/debian/rules
+index cf0441a..840a74c 100755
+--- a/openhpi-3.6.1/debian/rules
++++ b/openhpi-3.6.1/debian/rules
+@@ -21,9 +21,14 @@ DEB_HOST_ARCH_OS    ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
+ 
+ # The following fails on ia64, because of alignment stuff
+ # CFLAGS = -Wall -g
+-CFLAGS = -g
++CFLAGS = -g -DOPENIPMI_DEFINE_SELECTOR_T
++
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++	PKG_CONFIG_PATH = /usr/lib/$(DEB_HOST_GNU_TYPE)/pkgconfig
++endif
+ 
+ export CPPFLAGS CFLAGS LDFLAGS
++
+ ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+ 	CFLAGS += -O0
+ else
+@@ -44,7 +49,7 @@ configure-stamp:
+ 	# wrong:
+ 	# LDFLAGS="-Wl,-z,defs"
+ 	chmod +x ltmain.sh configure
+-	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --sysconfdir=/etc --with-varpath=/var/lib/openhpi --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-daemon --enable-clients --enable-ipmi --enable-cpp_wrappers --enable-oa_soap --enable-ilo2_ribcl --enable-snmp_bc --enable-ipmidirect --enable-simulator --enable-dynamic_simulator $(CONFFLAGS) CFLAGS="$(CFLAGS)"
++	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --sysconfdir=/etc --with-varpath=/var/lib/openhpi --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-daemon --enable-clients --enable-ipmi --enable-cpp_wrappers --enable-oa_soap --enable-ilo2_ribcl --enable-snmp_bc --enable-ipmidirect --enable-simulator --enable-dynamic_simulator $(CONFFLAGS) CFLAGS="$(CFLAGS)" PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"
+ 	touch configure-stamp
+ 
+ 

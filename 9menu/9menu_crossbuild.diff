@@ -1,0 +1,15 @@
+diff --git a/9menu-1.9/debian/rules b/9menu-1.9/debian/rules
+index 56f4459..fe71a9f 100755
+--- a/9menu-1.9/debian/rules
++++ b/9menu-1.9/debian/rules
+@@ -5,6 +5,10 @@ CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
+ CFLAGS := $(shell dpkg-buildflags --get CFLAGS)
+ LDFLAGS := $(shell dpkg-buildflags --get LDFLAGS)
+ 
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++CC = $(DEB_HOST_GNU_TYPE)-gcc
++endif
++
+ %:
+ 	dh $@
+ 

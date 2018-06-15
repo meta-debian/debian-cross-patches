@@ -1,0 +1,29 @@
+Description: Add missing option during configure and
+	correct compiler for compiling
+
+diff --git a/cdrkit-1.1.11/debian/rules b/cdrkit-1.1.11/debian/rules
+index 81d0dc2..fc9cfb1 100755
+--- a/cdrkit-1.1.11/debian/rules
++++ b/cdrkit-1.1.11/debian/rules
+@@ -4,6 +4,10 @@
+ # Original from Erik Andersen <andersee@debian.org>
+ #
+ 
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++	CC = $(DEB_HOST_GNU_TYPE)-gcc
++endif
++
+ PACKAGE = cdrkit
+ 
+ CFLAGS = -g
+@@ -32,8 +36,8 @@ build/build-debstamp:
+ 	@echo "--- Compiling"
+ 	dh_testdir
+ 	echo "#define ZISOFS_TOOLS_VERSION \"$(ziso_VERSION)\"" > 3rd-party/zisofs_tools/version.h
+-	make CFLAGS='$(CFLAGS)'
+-	cd 3rd-party/zisofs_tools && CFLAGS='$(CFLAGS)' ./configure && $(MAKE)
++	make CFLAGS='$(CFLAGS)' CC="$(CC)"
++	cd 3rd-party/zisofs_tools && CFLAGS='$(CFLAGS)' ./configure --host="$(DEB_HOST_GNU_TYPE)" && $(MAKE) CC="$(CC)"
+ 	touch build/build-debstamp
+ 
+ clean:

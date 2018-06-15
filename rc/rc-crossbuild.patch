@@ -1,0 +1,32 @@
+Description: Correct build depend and build sequence.
+	When cross compiling the source, the specific programs built during
+	the compilation phase are relevant for execution.
+	Need to build those programs with the right way.
+
+diff --git a/rc-1.7.4/debian/control b/rc-1.7.4/debian/control
+index 3ba54eb..3575d9e 100644
+--- a/rc-1.7.4/debian/control
++++ b/rc-1.7.4/debian/control
+@@ -6,7 +6,7 @@ Standards-Version: 3.9.8
+ Build-Depends: debhelper (>= 10),
+                byacc,
+                libncurses5-dev,
+-               libreadline-dev,
++               libreadline-dev:native,
+                procps
+ Homepage: http://tobold.org/article/rc
+ Vcs-Git: https://anonscm.debian.org/git/collab-maint/rc.git
+diff --git a/rc-1.7.4/debian/rules b/rc-1.7.4/debian/rules
+index bac9d73..ffbdd94 100755
+--- a/rc-1.7.4/debian/rules
++++ b/rc-1.7.4/debian/rules
+@@ -9,3 +9,7 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+ 
+ override_dh_auto_configure:
+ 	dh_auto_configure -- --with-edit=readline --with-addon
++
++override_dh_auto_build:
++	$(MAKE) CC="$(DEB_BUILD_GNU_TYPE)-gcc" sigmsgs.c sigmsgs.h statval.h
++	dh_auto_build
+-- 
+2.16.1

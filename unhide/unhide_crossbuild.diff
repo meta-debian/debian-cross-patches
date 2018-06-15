@@ -1,0 +1,19 @@
+Description: use host gcc to build
+
+diff --git a/unhide-20130526/debian/rules b/unhide-20130526/debian/rules
+index 4594636..1e3b3c0 100755
+--- a/unhide-20130526/debian/rules
++++ b/unhide-20130526/debian/rules
+@@ -21,7 +21,7 @@ override_dh_auto_configure:
+ 	ln man/es/unhide.8 man/unhide.es.8
+ 
+ override_dh_auto_build:
+-	gcc $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -Wall -O2 -pthread -o unhide-linux unhide-linux*.c unhide-output.c
+-	gcc $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -Wall -O2 -o unhide-tcp unhide-tcp.c unhide-tcp-fast.c unhide-output.c
+-	gcc $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -Wall -O2 -o unhide_rb unhide_rb.c
+-	gcc $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -o unhide-posix unhide-posix.c
+\ No newline at end of file
++	$(DEB_HOST_GNU_TYPE)-gcc $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -Wall -O2 -pthread -o unhide-linux unhide-linux*.c unhide-output.c
++	$(DEB_HOST_GNU_TYPE)-gcc $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -Wall -O2 -o unhide-tcp unhide-tcp.c unhide-tcp-fast.c unhide-output.c
++	$(DEB_HOST_GNU_TYPE)-gcc $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -Wall -O2 -o unhide_rb unhide_rb.c
++	$(DEB_HOST_GNU_TYPE)-gcc $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -o unhide-posix unhide-posix.c

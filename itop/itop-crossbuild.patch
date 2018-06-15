@@ -1,0 +1,74 @@
+diff --git a/itop-0.1/debian/0001-Makefile-crossbuild.diff b/itop-0.1/debian/0001-Makefile-crossbuild.diff
+new file mode 100644
+index 0000000..32c8f43
+--- /dev/null
++++ b/itop-0.1/debian/0001-Makefile-crossbuild.diff
+@@ -0,0 +1,17 @@
++diff --git a/itop-0.1/src/Makefile b/itop-0.1/src/Makefile
++index 7f67626..9ce48c8 100644
++--- a/itop-0.1/src/Makefile
+++++ b/itop-0.1/src/Makefile
++@@ -1,10 +1,8 @@
++-CC=gcc -Wall
++-
++ all: itop
++ 
++ itop: itop.c
++-	$(CC) -o itop itop.c
++-	strip itop
+++	$(CC) -Wall -o itop itop.c
+++	$(STRIP) itop
++ 
++ clean:
++ 	rm -f itop *.o *~
+diff --git a/itop-0.1/debian/patches/series b/itop-0.1/debian/patches/series
+new file mode 100644
+index 0000000..8dd7489
+--- /dev/null
++++ b/itop-0.1/debian/patches/series
+@@ -0,0 +1 @@
++0001-Makefile-crossbuild.diff
+diff --git a/itop-0.1/debian/rules b/itop-0.1/debian/rules
+index 7d8f4e1..ca1103b 100755
+--- a/itop-0.1/debian/rules
++++ b/itop-0.1/debian/rules
+@@ -2,6 +2,10 @@
+ 
+ CFLAGS = -Wall -g
+ 
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++	CC = $(DEB_HOST_GNU_TYPE)-gcc
++endif
++
+ ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+ 	CFLAGS += -O0
+ else
+@@ -17,14 +21,14 @@ build: build-stamp
+ 
+ build-stamp: configure-stamp 
+ 	dh_testdir
+-	$(MAKE)
++	$(MAKE) CC="$(CC)" STRIP="$(DEB_HOST_GNU_TYPE)-strip"
+ 	touch $@
+ 
+ clean:
+ 	dh_testdir
+ 	dh_testroot
+ 	rm -f build-stamp configure-stamp
+-	[ ! -f Makefile ] || $(MAKE) clean
++	[ ! -f Makefile ] || $(MAKE) CC="$(CC)" clean
+ 	dh_clean 
+ 
+ install: build
+@@ -32,7 +36,7 @@ install: build
+ 	dh_testroot
+ 	dh_clean -k 
+ 	dh_installdirs
+-	$(MAKE) DESTDIR=$(CURDIR)/debian/itop install
++	$(MAKE) CC="$(CC)" DESTDIR=$(CURDIR)/debian/itop install
+ 
+ binary-indep: build install
+ 
+-- 
+2.15.1
+

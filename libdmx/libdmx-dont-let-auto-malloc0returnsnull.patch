@@ -1,0 +1,18 @@
+--- libdmx-1.1.3/debian/rules
++++ libdmx-1.1.3/debian/rules
+@@ -25,6 +25,15 @@ else
+ 	confflags += --build=$(DEB_BUILD_GNU_TYPE) --host=$(DEB_HOST_GNU_TYPE)
+ endif
+ 
++# cannot run test code for malloc0returnsnull when cross compile
++ifneq ($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
++	ifeq (,$(findstring malloc0returnsnull,$(DEB_BUILD_OPTIONS)))
++		confflags += --disable-malloc0returnsnull
++	else
++		confflags += --enable-malloc0returnsnull
++	endif
++endif
++
+ build: build-arch
+ build-indep:
+ build-arch: build-stamp

@@ -1,0 +1,27 @@
+diff --git a/libx11-1.6.5/debian/rules b/libx11-1.6.5/debian/rules
+index 14d5a55..2b580dc 100755
+--- a/libx11-1.6.5/debian/rules
++++ b/libx11-1.6.5/debian/rules
+@@ -1,5 +1,14 @@
+ #!/usr/bin/make -f
+ 
++# cannot run test code for malloc0returnsnull when cross compile
++ifneq ($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
++	ifeq (,$(findstring malloc0returnsnull,$(DEB_BUILD_OPTIONS)))
++		confflags += --disable-malloc0returnsnull
++	else
++		confflags += --enable-malloc0returnsnull
++	endif
++endif
++
+ %:
+ 	dh $@ --with quilt --builddirectory=build/
+ 
+@@ -9,6 +18,7 @@ override_dh_auto_configure-arch: docflags = --disable-specs
+ override_dh_auto_configure-indep override_dh_auto_configure-arch:
+ 	dh_auto_configure -- \
+ 		$(docflags) \
++		$(confflags) \
+ 		--without-fop
+ 
+ override_dh_installdocs:

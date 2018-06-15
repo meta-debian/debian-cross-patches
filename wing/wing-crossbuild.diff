@@ -1,0 +1,22 @@
+diff --git a/wing-0.7/debian/rules b/wing-0.7/debian/rules
+index e0cda30..a19fc8c 100755
+--- a/wing-0.7/debian/rules
++++ b/wing-0.7/debian/rules
+@@ -5,11 +5,16 @@
+ # Uncomment this to turn on verbose mode.
+ #export DH_VERBOSE=1
+ 
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++	CC = $(DEB_HOST_GNU_TYPE)-g++
++	CXX = $(DEB_HOST_GNU_TYPE)-g++
++endif
++
+ %:
+ 	dh $@
+ 
+ override_dh_auto_build:
+-	$(MAKE) -f makefile.unx CPPFLAGS='$(CPPFLAGS)' CFLAGS='$(CFLAGS)' LDFLAGS='$(LDFLAGS)'
++	$(MAKE) -f makefile.unx CC="$(CC)" CXX="$(CXX)" CPPFLAGS='$(CPPFLAGS)' CFLAGS='$(CFLAGS)' LDFLAGS='$(LDFLAGS)'
+ 
+ override_dh_install:
+ 	mkdir -p debian/wing-data/usr/share/games/wing

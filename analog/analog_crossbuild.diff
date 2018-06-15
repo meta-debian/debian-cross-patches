@@ -1,0 +1,23 @@
+diff --git a/analog-6.0/debian/rules b/analog-6.0/debian/rules
+index 0a8710f..6201a88 100755
+--- a/analog-6.0/debian/rules
++++ b/analog-6.0/debian/rules
+@@ -5,13 +5,17 @@ export BUILD_DATE = $(shell LC_ALL=C date -u --date="`dpkg-parsechangelog -SDate
+ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+ export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+ 
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++        CC = $(DEB_HOST_GNU_TYPE)-gcc
++endif
++
+ %:
+ 	dh $@
+ 
+ override_dh_auto_build:
+ 	# NOTE: settting things to "" makes analog look for config files
+ 	# in the current directory if no path is specified. See anlghead.h
+-	$(MAKE) DEFS='-DHOSTNAME=\"Debian\ Linux\ System\" \
++	$(MAKE) CC="$(CC)" DEFS='-DHOSTNAME=\"Debian\ Linux\ System\" \
+ 		-DHOSTURL=\"/\" \
+ 		-DLOGSDIR=\"/var/log/apache/\" \
+ 		-DLOGFILE=\"access.log\" \

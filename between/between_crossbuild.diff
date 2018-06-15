@@ -1,0 +1,26 @@
+diff --git a/between-6+dfsg1/debian/rules b/between-6+dfsg1/debian/rules
+index 50c3832..e060754 100755
+--- a/between-6+dfsg1/debian/rules
++++ b/between-6+dfsg1/debian/rules
+@@ -2,6 +2,12 @@
+ 
+ export DEB_BUILD_MAINT_OPTIONS=hardening=+all
+ 
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++	GXX=$(DEB_HOST_GNU_TYPE)-g++
++else
++	GXX=g++
++endif
++
+ %:
+ 	dh $@ --parallel
+ 
+@@ -20,7 +26,7 @@ override_dh_auto_build:
+ 	sed -i -e 's/^OPTIMIZE_FLAG = .*/OPTIMIZE_FLAG = /' game7/gameSource/Makefile
+ 	sed -i -e 's/^COMPILE_FLAGS = /COMPILE_FLAGS = $$(CFLAGS) $$(CPPFLAGS) /' game7/gameSource/Makefile
+ 	sed -i -e 's/^LINK_FLAGS = /LINK_FLAGS = $$(LDFLAGS) /' game7/gameSource/Makefile
+-	$(MAKE) -C game7/gameSource LDFLAGS="$(LDFLAGS)" CPPFLAGS="$(CPPFLAGS)" CFLAGS="$(CFLAGS) -DETCDIR=\\\"/etc/between\\\" -DDATADIR=\\\"/usr/share/games/between/\\\""
++	$(MAKE) -C game7/gameSource GXX=$(GXX) LDFLAGS="$(LDFLAGS)" CPPFLAGS="$(CPPFLAGS)" CFLAGS="$(CFLAGS) -DETCDIR=\\\"/etc/between\\\" -DDATADIR=\\\"/usr/share/games/between/\\\""
+ 
+ override_dh_auto_clean:
+ 	[ ! -f game7/gameSource/Makefile ] || $(MAKE) -C game7/gameSource clean

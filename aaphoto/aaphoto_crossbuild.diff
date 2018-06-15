@@ -1,0 +1,16 @@
+Description: Add missing dependency GCC OpenMP (GOMP) support library
+
+diff --git a/aaphoto-0.45/debian/control b/aaphoto-0.45/debian/control
+index e1892ac..a432e5d 100644
+--- a/aaphoto-0.45/debian/control
++++ b/aaphoto-0.45/debian/control
+@@ -6,7 +6,8 @@ Build-Depends: debhelper (>= 9),
+  dh-autoreconf,
+  autotools-dev,
+  libjpeg-dev,
+- libpng-dev
++ libpng-dev,
++ libgomp1
+ Standards-Version: 3.9.8
+ Homepage: http://log69.com/aaphoto_en.html
+ 

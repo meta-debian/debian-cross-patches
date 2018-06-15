@@ -1,0 +1,17 @@
+--- libxext-1.3.3/debian/rules	2017-05-08 17:06:33.000000000 +0700
++++ libxext-1.3.3/debian/rules.new	2017-05-08 17:12:08.183302706 +0700
+@@ -28,6 +28,14 @@
+ endif
+ confflags += $(shell DEB_CFLAGS_MAINT_APPEND=-Wall dpkg-buildflags --export=configure)
+ 
++# cannot run test code for malloc0returnsnull when cross compile
++ifneq ($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
++	ifeq (,$(findstring malloc0returnsnull,$(DEB_BUILD_OPTIONS)))
++		confflags += --disable-malloc0returnsnull
++	else
++		confflags += --enable-malloc0returnsnull
++	endif
++endif
+ 
+ build: build-indep
+ build-indep: docflags = --enable-specs --with-xmlto --without-fop

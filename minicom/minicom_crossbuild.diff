@@ -1,0 +1,13 @@
+diff --git a/minicom-2.7.1/debian/rules b/minicom-2.7.1/debian/rules
+index edb895c..c7a22d9 100755
+--- a/minicom-2.7.1/debian/rules
++++ b/minicom-2.7.1/debian/rules
+@@ -61,7 +61,7 @@ binary-arch: build install
+ 	$(MAKE) DESTDIR=$(CURDIR)/debian/minicom install
+ 	chmod -R go=u-w $(BUILDDIR)
+ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+-	cd $(BUILDDIR)/usr/bin && strip -R .comment -R .note ascii-xfr minicom runscript
++	cd $(BUILDDIR)/usr/bin && $(DEB_HOST_GNU_TYPE)-strip -R .comment -R .note ascii-xfr minicom runscript
+ endif
+ 	install -p -D -m 0644 debian/desktop $(BUILDDIR)/usr/share/applications/minicom.desktop
+ 	find $(BUILDDIR)/usr/share/man -type f -print0 | xargs -0 gzip -9

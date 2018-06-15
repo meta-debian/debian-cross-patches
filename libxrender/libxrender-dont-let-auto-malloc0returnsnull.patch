@@ -1,0 +1,24 @@
+--- libxrender-0.9.10/debian/rules	2017-05-08 17:40:20.000000000 +0700
++++ libxrender-0.9.10/debian/rules.new	2017-05-08 17:46:19.695280902 +0700
+@@ -4,9 +4,21 @@
+ # set this to the name of the main shlib's binary package
+ PACKAGE = libxrender1
+ 
++# cannot run test code for malloc0returnsnull when cross compile
++ifneq ($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
++	ifeq (,$(findstring malloc0returnsnull,$(DEB_BUILD_OPTIONS)))
++		confflags += --disable-malloc0returnsnull
++	else
++		confflags += --enable-malloc0returnsnull
++	endif
++endif
++
+ %:
+ 	dh $@ --builddirectory=build/
+ 
++override_dh_auto_configure:
++	dh_auto_configure -- $(confflags)
++
+ override_dh_install:
+ 	dh_install --list-missing
+ 

@@ -1,0 +1,15 @@
+diff --git a/rman-3.2/debian/rules b/rman-3.2/debian/rules
+index f3ad80c..ea583e9 100755
+--- a/rman-3.2/debian/rules
++++ b/rman-3.2/debian/rules
+@@ -2,8 +2,10 @@
+ %:
+ 	dh $@
+ 
++ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
+ override_dh_auto_test:
+ 	./debian/autotest/autotest
++endif
+ 
+ override_dh_auto_install:
+ 	# Add here commands to install the package into debian/rman.

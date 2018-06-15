@@ -1,0 +1,22 @@
+--- libxv-1.0.11/debian/rules	2017-05-08 18:14:45.000000000 +0700
++++ libxv-1.0.11/debian/rules.new	2017-05-08 18:15:28.011262320 +0700
+@@ -1,7 +1,19 @@
+ #!/usr/bin/make -f
+ 
++# cannot run test code for malloc0returnsnull when cross compile
++ifneq ($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
++	ifeq (,$(findstring malloc0returnsnull,$(DEB_BUILD_OPTIONS)))
++		confflags += --disable-malloc0returnsnull
++	else
++		confflags += --enable-malloc0returnsnull
++	endif
++endif
++
+ %:
+ 	dh $@
+ 
++override_dh_auto_configure:
++	dh_auto_configure -- $(confflags)
++
+ override_dh_install:
+ 	dh_install --fail-missing --exclude=libXv.la

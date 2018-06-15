@@ -1,0 +1,41 @@
+diff --git a/cdpr-2.4/debian/patches/0003-Makefile-crossbuild.diff b/cdpr-2.4/debian/patches/0003-Makefile-crossbuild.diff
+new file mode 100644
+index 0000000..095f1a7
+--- /dev/null
++++ b/cdpr-2.4/debian/patches/0003-Makefile-crossbuild.diff
+@@ -0,0 +1,25 @@
++diff --git a/cdpr-2.4/Makefile b/cdpr-2.4/Makefile
++index e943a8a..7f281a0 100644
++--- a/cdpr-2.4/Makefile
+++++ b/cdpr-2.4/Makefile
++@@ -24,16 +24,16 @@ LDFLAGS = -lpcap
++ all: cdpr
++ 
++ cdpr.o: cdpr.c cdp.h cdpr.h
++-	gcc -c $(CFLAGS) cdpr.c
+++	$(CC) -c $(CFLAGS) cdpr.c
++ 
++ cdprs.o: cdprs.c cdp.h cdpr.h
++-	gcc -c $(CFLAGS) cdprs.c
+++	$(CC) -c $(CFLAGS) cdprs.c
++ 
++ conffile.o: conffile.c cdp.h cdpr.h
++-	gcc -c $(CFLAGS) conffile.c
+++	$(CC) -c $(CFLAGS) conffile.c
++ 
++ cdpr: cdpr.o cdprs.o conffile.o
++-	gcc $(LDFLAGS) -o cdpr cdpr.o cdprs.o conffile.o
+++	$(CC) $(LDFLAGS) -o cdpr cdpr.o cdprs.o conffile.o
++ 
++ install: all
++ 	mkdir -p $(DESTDIR)$(prefix)/sbin/
+diff --git a/cdpr-2.4/debian/patches/series b/cdpr-2.4/debian/patches/series
+index 2f249aa..1569464 100644
+--- a/cdpr-2.4/debian/patches/series
++++ b/cdpr-2.4/debian/patches/series
+@@ -1,2 +1,3 @@
+ 0001-Spruced-up-Makefile.patch
+ 0002-remove-pseudo-device-all-from-list-of-interfaces.patch
++0003-Makefile-crossbuild.patch
+-- 
+2.15.1

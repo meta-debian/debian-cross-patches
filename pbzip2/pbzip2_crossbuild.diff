@@ -1,0 +1,24 @@
+diff --git a/pbzip2-1.1.9/debian/rules b/pbzip2-1.1.9/debian/rules
+index e6d1fd6..791cb1a 100755
+--- a/pbzip2-1.1.9/debian/rules
++++ b/pbzip2-1.1.9/debian/rules
+@@ -21,6 +21,10 @@ ifneq (,$(findstring m68k,$(DEB_HOST_ARCH)))
+ 	CFLAGS = -Wall -O0
+ endif
+ 
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++	CXX = $(DEB_HOST_GNU_TYPE)-g++
++endif
++
+ CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+ LDFLAGS += -lbz2 -lpthread
+ 
+@@ -35,7 +39,7 @@ build: build-stamp
+ 
+ build-stamp: configure-stamp 
+ 	dh_testdir
+-	$(MAKE) CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)"
++	$(MAKE) CXX="$(CXX)" CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)"
+ 	touch build-stamp
+ 
+ clean:

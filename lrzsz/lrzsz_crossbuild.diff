@@ -1,0 +1,28 @@
+diff --git a/lrzsz-0.12.21/debian/rules b/lrzsz-0.12.21/debian/rules
+index cc63d30..a11b534 100755
+--- a/lrzsz-0.12.21/debian/rules
++++ b/lrzsz-0.12.21/debian/rules
+@@ -6,8 +6,12 @@ testroot = test x`whoami` = xroot
+ # FOR AUTOCONF 2.13 ONLY
+ ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
+   confflags += $(DEB_HOST_GNU_TYPE)
+-else
+-  $(error Cannot cross-compile this package out-of-the-box)
++endif
++
++include /usr/share/dpkg/architecture.mk
++
++ifeq ($(origin CC),default)
++export	CC = $(DEB_HOST_GNU_TYPE)-gcc
+ endif
+ 
+ CPPFLAGS = $(shell dpkg-buildflags --get CPPFLAGS)
+@@ -53,7 +57,7 @@ binary-arch: build
+ 	$(MAKE) prefix=$(CURDIR)/debian/tmp/usr install
+ 
+ ifeq "$(findstring nostrip,$(DEB_BUILD_OPTIONS))" ""
+-	strip -R .comment -R .note debian/tmp/usr/bin/*
++	$(DEB_HOST_GNU_TYPE)-strip -R .comment -R .note debian/tmp/usr/bin/*
+ endif
+ 
+ 	install -d -m 0755 debian/tmp/usr/share/doc/lrzsz

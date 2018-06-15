@@ -1,0 +1,84 @@
+Description: avoid regenerating man pages when cross-compiling
+ man pages were generated from native build,
+ don't regenerate them or error will happen:
+   | help2man: can't get `--help' info from man/chroot.td/chroot
+   | Try `--no-discard-stderr' if option outputs to stderr
+
+diff --git a/coreutils-8.28/debian/patches/avoid_regenerating_man_pages.patch b/coreutils-8.28/debian/patches/avoid_regenerating_man_pages.patch
+new file mode 100644
+index 0000000..d634726
+--- /dev/null
++++ b/coreutils-8.28/debian/patches/avoid_regenerating_man_pages.patch
+@@ -0,0 +1,22 @@
++diff --git a/coreutils-8.28/Makefile.in b/coreutils-8.28/Makefile.in
++index 521f293..c22f10d 100644
++--- a/coreutils-8.28/Makefile.in
+++++ b/coreutils-8.28/Makefile.in
++@@ -14755,6 +14755,9 @@ check-local: check-texinfo
++ distclean-local:
++ 	test x$(srcdir) = x$(builddir) || rm -f $(ALL_MANS)
++ 
+++ifeq "$(ISCROSS)" "yes"
+++$(ALL_MANS):
+++else
++ $(ALL_MANS): $(mandeps)
++ # Most prog.1 man pages depend on src/prog.  List the exceptions:
++ @SINGLE_BINARY_FALSE@man/install.1:   src/ginstall$(EXEEXT)
++@@ -14865,6 +14868,7 @@ $(ALL_MANS): $(mandeps)
++ @SINGLE_BINARY_FALSE@man/who.1:       src/who$(EXEEXT)
++ @SINGLE_BINARY_FALSE@man/whoami.1:    src/whoami$(EXEEXT)
++ @SINGLE_BINARY_FALSE@man/yes.1:       src/yes$(EXEEXT)
+++endif
++ 
++ .x.1:
++ 	$(AM_V_GEN)name=`echo $@ | sed 's|.*/||; s|\.1$$||'` || exit 1;	\
+diff --git a/coreutils-8.28/debian/patches/series b/coreutils-8.28/debian/patches/series
+index d6c4297..f407dce 100644
+--- a/coreutils-8.28/debian/patches/series
++++ b/coreutils-8.28/debian/patches/series
+@@ -3,3 +3,4 @@
+ 72_id_checkngroups.patch
+ 85_timer_settime.patch
+ 99_kfbsd_fstat_patch.patch
++avoid_regenerating_man_pages.patch
+diff --git a/coreutils-8.28/debian/rules b/coreutils-8.28/debian/rules
+index 5b9a6bd..29640d1 100755
+--- a/coreutils-8.28/debian/rules
++++ b/coreutils-8.28/debian/rules
+@@ -18,14 +18,33 @@ BIN_PROGS = cat chgrp chmod chown cp date dd df dir echo false ln ls mkdir \
+ 	mktemp
+ d=debian/coreutils
+ 
++ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
+ override_dh_auto_configure:
++else
++override_dh_auto_configure: build-native-man
++endif
+ 	dh_auto_configure -- --enable-install-program=arch 
+ 
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++export ISCROSS=yes
++endif
++
+ %:
+ 	dh  $@ 
+ 
+ override_dh_auto_clean:
+ 	make distclean || true
++	rm -rf $(native_build_dir)/*
++
++native_build_dir=debian/build-native
++build-native-man: clean
++	# prepare to build native binary files,
++	# they are required to generate manpage with help2man when cross-compiling
++	mkdir -p $(native_build_dir)
++	dh_auto_configure --builddirectory=$(native_build_dir) -- \
++	    --enable-install-program=arch --host=$(DEB_BUILD_GNU_TYPE)
++	dh_auto_build --builddirectory=$(native_build_dir)
++	cp $(native_build_dir)/man/*.1 man/
+ 
+ override_dh_auto_test:
+ 	# tests fail a lot on the buildds
+-- 
+2.17.0
+

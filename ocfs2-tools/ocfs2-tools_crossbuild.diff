@@ -1,0 +1,21 @@
+diff --git a/ocfs2-tools-1.8.5/debian/rules b/ocfs2-tools-1.8.5/debian/rules
+index 23ee2f0..837f7dd 100755
+--- a/ocfs2-tools-1.8.5/debian/rules
++++ b/ocfs2-tools-1.8.5/debian/rules
+@@ -3,9 +3,16 @@
+ # build fails when format hardening is on
+ export DEB_BUILD_MAINT_OPTIONS=hardening=+all,-format
+ 
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++	PKG_CONFIG_PATH = /usr/lib/$(DEB_HOST_GNU_TYPE)/pkgconfig
++endif
++
+ %:
+ 	dh $@
+ 
++override_dh_auto_configure:
++	PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)" dh_auto_configure --
++
+ override_dh_installinit:
+ 	mkdir -p debian/ocfs2-tools/usr/lib/ocfs2-tools
+ 	cp -f vendor/common/o2cb.init debian/ocfs2-tools/usr/lib/ocfs2-tools/o2cb

@@ -1,0 +1,24 @@
+diff --git a/cba-0.3.6/debian/rules b/cba-0.3.6/debian/rules
+index ffdd374..3ab341d 100755
+--- a/cba-0.3.6/debian/rules
++++ b/cba-0.3.6/debian/rules
+@@ -9,6 +9,10 @@
+ # Uncomment this to turn on verbose mode.
+ #export DH_VERBOSE=1
+ 
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++	CXX = $(DEB_HOST_GNU_TYPE)-g++
++endif
++
+ configure: configure-stamp
+ configure-stamp:
+ 	dh_testdir
+@@ -21,7 +25,7 @@ build: build-stamp
+ build-stamp: configure-stamp  
+ 	dh_testdir
+ 
+-	$(MAKE)
++	$(MAKE) CXX="$(CXX)"
+ 
+ 	touch $@
+ 

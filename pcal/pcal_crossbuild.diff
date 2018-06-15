@@ -1,0 +1,27 @@
+diff --git a/pcal-4.11.0/debian/rules b/pcal-4.11.0/debian/rules
+index ace83f9..56faa3a 100755
+--- a/pcal-4.11.0/debian/rules
++++ b/pcal-4.11.0/debian/rules
+@@ -9,13 +9,21 @@
+ 
+ # This is the debhelper compatability version to use.
+ 
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++	ifeq ($(OS),DJGPP)
++        	CC=$(DEB_HOST_GNU_TYPE)-gcc
++	else
++        	CC=/usr/bin/$(DEB_HOST_GNU_TYPE)-gcc
++	endif
++endif
++
+ build: build-arch build-indep
+ build-arch: build-stamp
+ build-indep: build-stamp
+ build-stamp:
+ 	dh_testdir
+ 
+-	$(MAKE) CFLAGS="-O2 -Wall -DEPS"
++	$(MAKE) CFLAGS="-O2 -Wall -DEPS" CC=$(CC)
+ 
+ 	touch build-stamp
+ 

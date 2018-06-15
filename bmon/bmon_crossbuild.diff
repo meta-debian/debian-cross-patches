@@ -1,0 +1,25 @@
+Description: Use wrong pkgconfig file for configuration
+	When cross compiling the source code, path to pkgconfig file
+	need to consistent with host-specific
+
+diff --git a/bmon-4.0/debian/rules b/bmon-4.0/debian/rules
+index 263d71f..f62a1d3 100755
+--- a/bmon-4.0/debian/rules
++++ b/bmon-4.0/debian/rules
+@@ -2,11 +2,15 @@
+ 
+ export DEB_BUILD_MAINT_OPTIONS=hardening=+all
+ 
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++	PKG_CONFIG_PATH = /usr/lib/$(DEB_HOST_GNU_TYPE)/pkgconfig
++endif
++
+ %:
+ 	dh $@ --with autoreconf
+ 
+ override_dh_auto_configure:
+-	dh_auto_configure -- --disable-silent-rules
++	PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)" dh_auto_configure -- --disable-silent-rules
+ 
+ override_dh_installchangelogs:
+ 	dh_installchangelogs NEWS

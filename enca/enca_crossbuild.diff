@@ -1,0 +1,17 @@
+Description: Correct build sequence.
+	When cross compiling the source, the specific programs built during
+	the compilation phase are relevant for execution.
+	Need to build those programs with the right way.
+
+diff --git a/enca-1.19/debian/rules b/enca-1.19/debian/rules
+index c0f2d4e..bc5853b 100755
+--- a/enca-1.19/debian/rules
++++ b/enca-1.19/debian/rules
+@@ -12,3 +12,7 @@ override_dh_strip:
+ 
+ %:
+ 	dh $@ --with autoreconf
++
++override_dh_auto_build:
++	make CC="$(DEB_BUILD_GNU_TYPE)-gcc" -C tools
++	dh_auto_build

@@ -1,0 +1,26 @@
+--- libxt-1.1.5/debian/rules	2017-05-08 18:04:28.000000000 +0700
++++ libxt-1.1.5/debian/rules.new	2017-05-08 18:05:25.023268729 +0700
+@@ -2,6 +2,15 @@
+ 
+ PACKAGE = libxt6
+ 
++# cannot run test code for malloc0returnsnull when cross compile
++ifneq ($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
++	ifeq (,$(findstring malloc0returnsnull,$(DEB_BUILD_OPTIONS)))
++		confflags += --disable-malloc0returnsnull
++	else
++		confflags += --enable-malloc0returnsnull
++	endif
++endif
++
+ # only build specs if we're building libxt-doc
+ # if we want both all and any packages, dh runs the -arch override first
+ override_dh_auto_configure-arch: docflags = --disable-specs
+@@ -20,6 +29,7 @@
+ 		--enable-unit-tests \
+ 		--disable-silent-rules \
+ 		$(docflags) \
++		$(confflags) \
+ 		CFLAGS="$(CFLAGS)" \
+ 		LDFLAGS="$(LDFLAGS)"
+ 

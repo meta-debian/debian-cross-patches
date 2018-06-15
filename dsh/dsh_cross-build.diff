@@ -1,0 +1,20 @@
+--- dsh-0.25.10/debian/rules	2017-06-29 15:27:18.091618006 +0700
++++ dsh-0.25.10/debian/rules	2017-06-29 15:26:52.583618278 +0700
+@@ -27,14 +27,16 @@
+ 	dh_testdir
+ 	dh_autotools-dev_updateconfig
+ 	INSTALL_PROGRAM='${INSTALL_PROGRAM}' CFLAGS='${CFLAGS}' \
+-	 ./configure --prefix=/usr --sysconfdir=/etc/dsh --mandir=/usr/share/man
++	dh_auto_configure -- --prefix=/usr --sysconfdir=/etc/dsh --mandir=/usr/share/man
+ 	touch configure-stamp
+ 
+ build: configure-stamp build-stamp
+ build-stamp: configure
+ 	dh_testdir
+ 	$(MAKE)
++ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
+ 	$(MAKE) check
++endif
+ 	touch build-stamp
+ 
+ clean:
