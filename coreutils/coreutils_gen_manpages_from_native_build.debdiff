@@ -1,19 +1,11 @@
-Description: avoid regenerating man pages when cross-compiling
- man pages were generated from native build,
- don't regenerate them or error will happen:
-   | help2man: can't get `--help' info from man/chroot.td/chroot
-   | Try `--no-discard-stderr' if option outputs to stderr
-
-diff --git a/coreutils-8.28/debian/patches/avoid_regenerating_man_pages.patch b/coreutils-8.28/debian/patches/avoid_regenerating_man_pages.patch
-new file mode 100644
-index 0000000..d634726
---- /dev/null
-+++ b/coreutils-8.28/debian/patches/avoid_regenerating_man_pages.patch
+diff -Nru coreutils-8.28/debian/patches/crossbuild-avoid_generating_man_pages.patch coreutils-8.28/debian/patches/crossbuild-avoid_generating_man_pages.patch
+--- coreutils-8.28/debian/patches/crossbuild-avoid_generating_man_pages.patch	1970-01-01 08:00:00.000000000 +0800
++++ coreutils-8.28/debian/patches/crossbuild-avoid_generating_man_pages.patch	2018-07-04 10:09:56.000000000 +0700
 @@ -0,0 +1,22 @@
-+diff --git a/coreutils-8.28/Makefile.in b/coreutils-8.28/Makefile.in
++diff --git coreutils-8.28/Makefile.in coreutils-8.28/Makefile.in
 +index 521f293..c22f10d 100644
-+--- a/coreutils-8.28/Makefile.in
-++++ b/coreutils-8.28/Makefile.in
++--- coreutils-8.28/Makefile.in
+++++ coreutils-8.28/Makefile.in
 +@@ -14755,6 +14755,9 @@ check-local: check-texinfo
 + distclean-local:
 + 	test x$(srcdir) = x$(builddir) || rm -f $(ALL_MANS)
@@ -32,36 +24,31 @@ index 0000000..d634726
 + 
 + .x.1:
 + 	$(AM_V_GEN)name=`echo $@ | sed 's|.*/||; s|\.1$$||'` || exit 1;	\
-diff --git a/coreutils-8.28/debian/patches/series b/coreutils-8.28/debian/patches/series
-index d6c4297..f407dce 100644
---- a/coreutils-8.28/debian/patches/series
-+++ b/coreutils-8.28/debian/patches/series
+diff -Nru coreutils-8.28/debian/patches/series coreutils-8.28/debian/patches/series
+--- coreutils-8.28/debian/patches/series	2017-10-03 00:31:47.000000000 +0700
++++ coreutils-8.28/debian/patches/series	2018-07-04 16:31:50.000000000 +0700
 @@ -3,3 +3,4 @@
  72_id_checkngroups.patch
  85_timer_settime.patch
  99_kfbsd_fstat_patch.patch
-+avoid_regenerating_man_pages.patch
-diff --git a/coreutils-8.28/debian/rules b/coreutils-8.28/debian/rules
-index 5b9a6bd..29640d1 100755
---- a/coreutils-8.28/debian/rules
-+++ b/coreutils-8.28/debian/rules
-@@ -18,14 +18,33 @@ BIN_PROGS = cat chgrp chmod chown cp date dd df dir echo false ln ls mkdir \
++crossbuild-avoid_generating_man_pages.patch
+diff -Nru coreutils-8.28/debian/rules coreutils-8.28/debian/rules
+--- coreutils-8.28/debian/rules	2016-01-19 03:35:34.000000000 +0700
++++ coreutils-8.28/debian/rules	2018-07-04 17:23:12.000000000 +0700
+@@ -18,7 +18,12 @@
  	mktemp
  d=debian/coreutils
  
-+ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
- override_dh_auto_configure:
-+else
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++export ISCROSS=yes
 +override_dh_auto_configure: build-native-man
++else
+ override_dh_auto_configure:
 +endif
  	dh_auto_configure -- --enable-install-program=arch 
  
-+ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
-+export ISCROSS=yes
-+endif
-+
  %:
- 	dh  $@ 
+@@ -26,6 +31,17 @@
  
  override_dh_auto_clean:
  	make distclean || true
@@ -79,6 +66,3 @@ index 5b9a6bd..29640d1 100755
  
  override_dh_auto_test:
  	# tests fail a lot on the buildds
--- 
-2.17.0
-
