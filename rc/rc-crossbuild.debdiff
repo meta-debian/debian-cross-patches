@@ -1,0 +1,11 @@
+diff -Nru rc-1.7.4/debian/rules rc-1.7.4/debian/rules
+--- rc-1.7.4/debian/rules	2016-09-27 06:18:48.000000000 +0700
++++ rc-1.7.4/debian/rules	2016-09-27 06:36:15.000000000 +0700
+@@ -9,3 +9,7 @@
+ 
+ override_dh_auto_configure:
+ 	dh_auto_configure -- --with-edit=readline --with-addon
++
++override_dh_auto_build:
++	$(MAKE) CC="$(DEB_BUILD_GNU_TYPE)-gcc" sigmsgs.c sigmsgs.h statval.h
++	dh_auto_build

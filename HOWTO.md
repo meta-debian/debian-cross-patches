@@ -117,11 +117,11 @@ cd orig
 # (*.orig.tar.*, *.debian.tar.*, *.dsc, etc.)
 
 cd ..
-debdiff filename.dsc orig/filename.dsc > patchname.debdiff
+debdiff orig/filename.dsc filename.dsc > patchname.debdiff
 ```
 
 ## How to apply patch
-All patches in this repository should be apply at level 1 of source code.
+All patches in this repository should be applied at level 1 of source code.
 ```sh
 cd <source code dir>
 patch -p1 < path/to/patch/file

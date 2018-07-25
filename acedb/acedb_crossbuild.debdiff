@@ -1,0 +1,91 @@
+diff -Nru acedb-4.9.39+dfsg.02/debian/control acedb-4.9.39+dfsg.02/debian/control
+--- acedb-4.9.39+dfsg.02/debian/control	2018-02-28 05:11:58.000000000 -0500
++++ acedb-4.9.39+dfsg.02/debian/control	2018-02-28 05:11:58.000000000 -0500
+@@ -8,8 +8,8 @@
+                libreadline-dev,
+                libglib2.0-dev,
+                libgtk2.0-dev,
+-               pkg-config,
+-               csh,
++               pkg-config:native,
++               csh:native,
+                flex,
+                libfl-dev,
+                bison
+diff -Nru acedb-4.9.39+dfsg.02/debian/patches/LINUX_4_DEF-crossbuild.patch acedb-4.9.39+dfsg.02/debian/patches/LINUX_4_DEF-crossbuild.patch
+--- acedb-4.9.39+dfsg.02/debian/patches/LINUX_4_DEF-crossbuild.patch	1969-12-31 19:00:00.000000000 -0500
++++ acedb-4.9.39+dfsg.02/debian/patches/LINUX_4_DEF-crossbuild.patch	2018-02-28 05:11:58.000000000 -0500
+@@ -0,0 +1,22 @@
++diff --git a/wmake/LINUX_4_DEF b/wmake/LINUX_4_DEF
++index 7a13e4d..3dfb9cc 100644
++--- a/wmake/LINUX_4_DEF
+++++ b/wmake/LINUX_4_DEF
++@@ -18,14 +18,14 @@
++ NAME = LINUX
++ 
++ # Compiler used to build 3rd party libraries 
++-LIBCC = gcc
+++LIBCC = $(CROSS_CC)
++ 
++ COPT = -g
++ GTKVER = glib-2.0 gtk+-2.0
++ 
++-COMPILER = gcc $(COPT) -Wall  -DACEDB4 `../w3rdparty/include-config $(GTKVER)` $(CFLAGS)
+++COMPILER = $(CROSS_CC) $(COPT) -Wall  -DACEDB4 `../w3rdparty/include-config $(GTKVER)` $(CFLAGS)
++ 
++-LINKER = gcc $(COPT) $(LDFLAGS)
+++LINKER = $(CROSS_CC) $(COPT) $(LDFLAGS)
++ 
++ # The arg to libs-config is used if our private copy not installed.
++ LIBS = -L/usr/X11R6/lib `../w3rdparty/libs-config $(GTKVER)` -lm -lreadline -lX11
+diff -Nru acedb-4.9.39+dfsg.02/debian/patches/LINUX_64_DEF-crossbuild.patch acedb-4.9.39+dfsg.02/debian/patches/LINUX_64_DEF-crossbuild.patch
+--- acedb-4.9.39+dfsg.02/debian/patches/LINUX_64_DEF-crossbuild.patch	1969-12-31 19:00:00.000000000 -0500
++++ acedb-4.9.39+dfsg.02/debian/patches/LINUX_64_DEF-crossbuild.patch	2018-02-28 05:11:58.000000000 -0500
+@@ -0,0 +1,22 @@
++diff --git a/wmake/LINUX_64_DEF b/wmake/LINUX_64_DEF
++index e0a8a6c..60c00b1 100644
++--- a/wmake/LINUX_64_DEF
+++++ b/wmake/LINUX_64_DEF
++@@ -18,14 +18,14 @@
++ NAME = OPTERON
++ 
++ # Compiler used to build 3rd party libraries 
++-LIBCC = gcc
+++LIBCC = $(CROSS_CC) 
++ 
++ COPT = -g
++ GTKVER = glib-2.0 gtk+-2.0
++ 
++-COMPILER = gcc $(COPT) -Wall  -DACEDB4 `../w3rdparty/include-config $(GTKVER)` $(CLFAGS)
+++COMPILER = $(CROSS_CC) $(COPT) -Wall  -DACEDB4 `../w3rdparty/include-config $(GTKVER)` $(CLFAGS)
++ 
++-LINKER = gcc $(COPT) $(LDFLAGS)
+++LINKER = $(CROSS_CC) $(COPT) $(LDFLAGS)
++ 
++ # The arg to libs-config is used if our private copy not installed.
++ LIBS = -L/usr/X11R6/lib `../w3rdparty/libs-config $(GTKVER)` -lm -lreadline -lX11
+diff -Nru acedb-4.9.39+dfsg.02/debian/patches/series acedb-4.9.39+dfsg.02/debian/patches/series
+--- acedb-4.9.39+dfsg.02/debian/patches/series	2018-02-28 05:11:58.000000000 -0500
++++ acedb-4.9.39+dfsg.02/debian/patches/series	2018-02-28 05:11:58.000000000 -0500
+@@ -10,3 +10,5 @@
+ spelling.patch
+ no_dotter_and_belvu.patch
+ libfl.patch
++LINUX_4_DEF-crossbuild.patch
++LINUX_64_DEF-crossbuild.patch
+diff -Nru acedb-4.9.39+dfsg.02/debian/rules acedb-4.9.39+dfsg.02/debian/rules
+--- acedb-4.9.39+dfsg.02/debian/rules	2018-02-28 05:11:58.000000000 -0500
++++ acedb-4.9.39+dfsg.02/debian/rules	2018-02-28 05:11:58.000000000 -0500
+@@ -32,7 +32,11 @@
+ 
+ override_dh_auto_build:
+ 	ln -sf bin.$(ACEDB_MACHINE) bin
+-	$(MAKE) tools other CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
++	if [ "$(DEB_BUILD_GNU_TYPE)" != "$(DEB_HOST_GNU_TYPE)" ]; then \
++		PKG_CONFIG_PATH=/usr/lib/$(DEB_HOST_GNU_TYPE)/pkgconfig $(MAKE) CROSS_CC=$(DEB_HOST_GNU_TYPE)-gcc tools other CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"; \
++	else \
++		$(MAKE) CROSS_CC=gcc tools other CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"; \
++	fi
+ 
+ override_dh_auto_test:
+ 	cd bin && ln -s ../w2/graphtest.c
