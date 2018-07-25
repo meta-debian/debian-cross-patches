@@ -1,8 +1,0 @@
---- fluxbox-1.3.5/debian/rules.d/050-configure_override.mk.old	2017-06-28 18:23:25.000423996 +0700
-+++ fluxbox-1.3.5/debian/rules.d/050-configure_override.mk	2017-06-28 18:23:47.708423754 +0700
-@@ -17,4 +17,4 @@
- DEB_CONFIGURE_EXTRA_FLAGS += -with-style=$(DEB_STYLE_DIR)/$(THEME_DEFAULT)
- 
- override_dh_auto_configure:
--	./configure $(DEB_CONFIGURE_EXTRA_FLAGS)
-+	dh_auto_configure -- $(DEB_CONFIGURE_EXTRA_FLAGS)

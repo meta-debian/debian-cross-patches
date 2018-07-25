@@ -1,0 +1,50 @@
+diff -Nru and-1.2.2/debian/patches/000_Makefile-crossbuild.diff and-1.2.2/debian/patches/000_Makefile-crossbuild.diff
+--- and-1.2.2/debian/patches/000_Makefile-crossbuild.diff	1969-12-31 19:00:00.000000000 -0500
++++ and-1.2.2/debian/patches/000_Makefile-crossbuild.diff	2018-07-23 04:04:42.000000000 -0400
+@@ -0,0 +1,17 @@
++diff --git and-1.2.2/Makefile and-1.2.2/Makefile
++index a113fa5..d7f887b 100644
++--- and-1.2.2/Makefile
+++++ and-1.2.2/Makefile
++@@ -94,10 +94,10 @@ ARCH=$(shell uname|sed 's,/,_,')
++ #
++ # Architecture-dependent settings: ANSI C compiler and linker
++ #
++-DEBIAN_GCC = gcc -ansi -pedantic -Wall -g
+++DEBIAN_GCC = $(BUILD_GCC) -ansi -pedantic -Wall -g
++ ifeq (${ARCH},Linux)
++   CC = $(DEBIAN_GCC)
++-  LD = gcc
+++  LD = $(BUILD_GCC)
++   LIBS =
++ else
++ ifeq (${ARCH},OSF1)
+diff -Nru and-1.2.2/debian/patches/series and-1.2.2/debian/patches/series
+--- and-1.2.2/debian/patches/series	2010-01-24 16:58:27.000000000 -0500
++++ and-1.2.2/debian/patches/series	2018-07-23 04:04:42.000000000 -0400
+@@ -6,3 +6,4 @@
+ 000_Makefile.diff
+ 000_and-GNU_Hurd.c.diff
+ 000_and-GNU_kFreeBSD.c.diff
++000_Makefile-crossbuild.diff
+diff -Nru and-1.2.2/debian/rules and-1.2.2/debian/rules
+--- and-1.2.2/debian/rules	2010-01-24 16:05:27.000000000 -0500
++++ and-1.2.2/debian/rules	2018-07-23 04:04:42.000000000 -0400
+@@ -1,8 +1,17 @@
+ #!/usr/bin/make -f                                                                           
+ #export DH_VERBOSE=1                                                                         
+ 
++export  BUILD_GCC = gcc
++
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++	BUILD_GCC = $(DEB_HOST_GNU_TYPE)-gcc
++endif
++
+ %:
+ 		dh $@
+ 
++override_dh_auto_build:
++	$(MAKE)
++
+ override_dh_installchangelogs:
+ 		dh_installchangelogs CHANGELOG

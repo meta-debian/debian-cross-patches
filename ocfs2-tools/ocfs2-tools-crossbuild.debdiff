@@ -1,0 +1,18 @@
+diff -Nru ocfs2-tools-1.8.5/debian/rules ocfs2-tools-1.8.5/debian/rules
+--- ocfs2-tools-1.8.5/debian/rules	2018-02-10 17:44:56.000000000 +0700
++++ ocfs2-tools-1.8.5/debian/rules	2018-04-04 23:10:26.000000000 +0700
+@@ -3,8 +3,14 @@
+ # build fails when format hardening is on
+ export DEB_BUILD_MAINT_OPTIONS=hardening=+all,-format
+ 
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++	PKG_CONFIG_PATH = /usr/lib/$(DEB_HOST_GNU_TYPE)/pkgconfig
++endif
++
+ %:
+ 	dh $@
++override_dh_auto_configure:
++	PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)" dh_auto_configure --
+ 
+ override_dh_installinit:
+ 	mkdir -p debian/ocfs2-tools/usr/lib/ocfs2-tools

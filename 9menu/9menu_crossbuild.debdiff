@@ -1,0 +1,14 @@
+diff -Nru 9menu-1.9/debian/rules 9menu-1.9/debian/rules
+--- 9menu-1.9/debian/rules	2015-07-01 21:40:15.000000000 -0400
++++ 9menu-1.9/debian/rules	2018-07-12 03:30:42.000000000 -0400
+@@ -5,6 +5,10 @@
+ CFLAGS := $(shell dpkg-buildflags --get CFLAGS)
+ LDFLAGS := $(shell dpkg-buildflags --get LDFLAGS)
+ 
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++CC = $(DEB_HOST_GNU_TYPE)-gcc
++endif
++
+ %:
+ 	dh $@
+ 
