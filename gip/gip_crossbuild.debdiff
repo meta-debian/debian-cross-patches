@@ -1,0 +1,65 @@
+diff -Nru gip-1.7.0-1/debian/patches/73-build_file-cross.diff gip-1.7.0-1/debian/patches/73-build_file-cross.diff
+--- gip-1.7.0-1/debian/patches/73-build_file-cross.diff	1969-12-31 19:00:00.000000000 -0500
++++ gip-1.7.0-1/debian/patches/73-build_file-cross.diff	2016-07-23 23:45:32.000000000 -0400
+@@ -0,0 +1,30 @@
++diff --git a/installer/build_files.sh b/installer/build_files.sh
++index d3138ec..10d28e0 100755
++--- a/installer/build_files.sh
+++++ b/installer/build_files.sh
++@@ -27,7 +27,7 @@ compile_file() {
++   # Compile.
++   echo Compiling: $FILE...
++   set -x
++-  g++ -fPIC $CFLAGS -c $FILE -o $OBJECTFILE
+++  $CXX -fPIC $CFLAGS -c $FILE -o $OBJECTFILE
++   ERR="$?"
++   set +x
++   if [ "$ERR" -ne "0" ]; then
++@@ -122,14 +122,14 @@ fi
++ if [ "$SHARED" = "" ]; then
++   # Link as an executable.
++   set -x
++-  g++ -pie -fPIE $CFLAGS -o $OUTFILE $OBJECTFILES $LFLAGS
+++  $CXX -pie -fPIE $CFLAGS -o $OUTFILE $OBJECTFILES $LFLAGS
++   ERR="$?"
++   set +x
++ else
++   # Link as a shared library.
++   SHAREDNAME=`echo $OUTFILE | sed 's/\..*//'`
++   set -x
++-  g++ -shared -Wl,-soname,$SHAREDNAME $CFLAGS -o $OUTFILE $OBJECTFILES $LFLAGS
+++  $CXX -shared -Wl,-soname,$SHAREDNAME $CFLAGS -o $OUTFILE $OBJECTFILES $LFLAGS
++   ERR="$?"
++   set +x
++ fi
+diff -Nru gip-1.7.0-1/debian/patches/series gip-1.7.0-1/debian/patches/series
+--- gip-1.7.0-1/debian/patches/series	2016-07-23 15:27:58.000000000 -0400
++++ gip-1.7.0-1/debian/patches/series	2016-07-23 23:45:32.000000000 -0400
+@@ -7,3 +7,4 @@
+ 70-remove-header.diff
+ 71-debian-hardening.diff
+ 72-desktop-file.diff
++73-build_file-cross.diff
+diff -Nru gip-1.7.0-1/debian/rules gip-1.7.0-1/debian/rules
+--- gip-1.7.0-1/debian/rules	2016-07-22 01:45:36.000000000 -0400
++++ gip-1.7.0-1/debian/rules	2016-07-23 23:45:32.000000000 -0400
+@@ -3,6 +3,13 @@
+ 
+ CFLAGS = -Wall -g
+ 
++export CXX = g++
++
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++	PKG_CONFIG_PATH = /usr/lib/$(DEB_HOST_GNU_TYPE)/pkgconfig
++	CXX = $(DEB_HOST_GNU_TYPE)-g++
++endif
++
+ ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+ 	CFLAGS += -O0
+ else
+@@ -13,4 +20,4 @@
+ 	dh $@
+ 
+ override_dh_auto_install:
+-	./build.sh --install --prefix $(CURDIR)/debian/gip/usr
++	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ./build.sh --install --prefix $(CURDIR)/debian/gip/usr

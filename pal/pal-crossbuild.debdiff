@@ -1,0 +1,16 @@
+diff -u pal-0.4.3/debian/rules pal-0.4.3/debian/rules
+--- pal-0.4.3/debian/rules
++++ pal-0.4.3/debian/rules
+@@ -24,7 +24,11 @@
+ build-arch: build-stamp
+ build-stamp: $(QUILT_STAMPFN)
+ 	dh_testdir
+-	$(MAKE) "CFLAGS=$(CFLAGS)"
++	if [ "$(DEB_BUILD_GNU_TYPE)" != "$(DEB_HOST_GNU_TYPE)" ]; then \
++                PKG_CONFIG_PATH=/usr/lib/$(DEB_HOST_GNU_TYPE)/pkgconfig $(MAKE) CC="$(DEB_HOST_GNU_TYPE)-gcc" "CFLAGS=$(CFLAGS)"; \
++        else \
++                $(MAKE) "CFLAGS=$(CFLAGS)"; \
++        fi
+ 	touch $@
+ 
+ .PHONY: clean

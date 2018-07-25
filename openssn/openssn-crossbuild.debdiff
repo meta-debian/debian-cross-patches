@@ -1,0 +1,13 @@
+diff -Nru openssn-1.4/debian/rules openssn-1.4/debian/rules
+--- openssn-1.4/debian/rules	2018-05-03 23:33:22.000000000 +0700
++++ openssn-1.4/debian/rules	2018-05-03 23:33:22.000000000 +0700
+@@ -1,5 +1,9 @@
+ #!/usr/bin/make -f
+ 
++ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
++export CXX = $(DEB_HOST_GNU_TYPE)-g++
++endif
++
+ %:
+ 	dh $@
+ 

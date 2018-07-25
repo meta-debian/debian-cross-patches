@@ -1,0 +1,13 @@
+diff -Nru aaphoto-0.45/debian/control aaphoto-0.45/debian/control
+--- aaphoto-0.45/debian/control	2016-07-10 08:06:47.000000000 -0400
++++ aaphoto-0.45/debian/control	2016-07-10 07:38:19.000000000 -0400
+@@ -6,7 +6,8 @@
+  dh-autoreconf,
+  autotools-dev,
+  libjpeg-dev,
+- libpng-dev
++ libpng-dev,
++ libgomp1
+ Standards-Version: 3.9.8
+ Homepage: http://log69.com/aaphoto_en.html
+ 
