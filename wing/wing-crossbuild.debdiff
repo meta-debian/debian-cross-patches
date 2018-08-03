@@ -1,21 +1,54 @@
+diff -Nru wing-0.7/debian/patches/series wing-0.7/debian/patches/series
+--- wing-0.7/debian/patches/series	2017-10-18 23:01:52.000000000 +0700
++++ wing-0.7/debian/patches/series	2017-10-18 23:01:52.000000000 +0700
+@@ -1,2 +1,3 @@
+ 010_makefile.diff
+ 020_misc.diff
++use-CXX-instead-g++.patch
+diff -Nru wing-0.7/debian/patches/use-CXX-instead-g++.patch wing-0.7/debian/patches/use-CXX-instead-g++.patch
+--- wing-0.7/debian/patches/use-CXX-instead-g++.patch	1970-01-01 08:00:00.000000000 +0800
++++ wing-0.7/debian/patches/use-CXX-instead-g++.patch	2017-10-18 23:01:52.000000000 +0700
+@@ -0,0 +1,25 @@
++diff -Nuar wing-0.7.orig/makefile.unx wing-0.7/makefile.unx
++--- wing-0.7.orig/makefile.unx	2018-07-31 16:32:49.678421646 +0700
+++++ wing-0.7/makefile.unx	2018-07-31 16:33:45.994422427 +0700
++@@ -3,7 +3,7 @@
++ 
++ TARGET := wing
++ 
++-CC := g++
+++CXX := g++
++ CPPFLAGS := 
++ CFLAGS := -Wall -Wno-deprecated-declarations -g -O2
++ CXXFLAGS := $(CFLAGS)
++@@ -26,10 +26,10 @@
++ 
++ 
++ wing : $(OBJ)
++-	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(OBJ) -o $(TARGET) $(LIBS)
+++	$(CXX) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(OBJ) -o $(TARGET) $(LIBS)
++ 
++ .o : .cpp
++-	$(CC) $(CFLAGS) -c $^ -o $@
+++	$(CXX) $(CFLAGS) -c $^ -o $@
++ 
++ clean:
++ 	rm -f *.o additional/*.o
 diff -Nru wing-0.7/debian/rules wing-0.7/debian/rules
 --- wing-0.7/debian/rules	2017-10-18 23:01:52.000000000 +0700
 +++ wing-0.7/debian/rules	2017-10-18 23:01:52.000000000 +0700
-@@ -5,11 +5,16 @@
+@@ -5,11 +5,13 @@
  # Uncomment this to turn on verbose mode.
  #export DH_VERBOSE=1
  
-+ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
-+	CC = $(DEB_HOST_GNU_TYPE)-g++
-+	CXX = $(DEB_HOST_GNU_TYPE)-g++
-+endif
++include /usr/share/dpkg/buildtools.mk
 +
  %:
  	dh $@
  
  override_dh_auto_build:
 -	$(MAKE) -f makefile.unx CPPFLAGS='$(CPPFLAGS)' CFLAGS='$(CFLAGS)' LDFLAGS='$(LDFLAGS)'
-+	$(MAKE) -f makefile.unx CC="$(CC)" CXX="$(CXX)" CPPFLAGS='$(CPPFLAGS)' CFLAGS='$(CFLAGS)' LDFLAGS='$(LDFLAGS)'
++	$(MAKE) -f makefile.unx CPPFLAGS='$(CPPFLAGS)' CFLAGS='$(CFLAGS)' LDFLAGS='$(LDFLAGS)' CC='$(CC)' CXX='$(CXX)'
  
  override_dh_install:
  	mkdir -p debian/wing-data/usr/share/games/wing

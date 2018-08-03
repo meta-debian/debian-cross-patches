@@ -1,18 +1,15 @@
 diff -Nru ppp-2.4.7/debian/rules ppp-2.4.7/debian/rules
 --- ppp-2.4.7/debian/rules	2018-06-09 20:20:01.000000000 +0700
 +++ ppp-2.4.7/debian/rules	2018-06-09 20:20:01.000000000 +0700
-@@ -30,6 +30,10 @@
- 	USE_BUILTIN_CRYPTO=1 USE_EAPTLS=
- UDEB_PLUGIN_DIRS := pppoatm rp-pppoe
+@@ -10,6 +10,7 @@
+ PKD := $(abspath $(dir $(MAKEFILE_LIST)))
  
-+ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
-+	CC = $(DEB_HOST_GNU_TYPE)-gcc
-+endif
-+
- ##############################################################################
- %:
- 	dh $@
-@@ -79,14 +83,14 @@
+ include /usr/share/dpkg/default.mk
++include /usr/share/dpkg/buildtools.mk
+ 
+ DIR_PPP := $(CURDIR)/debian/ppp
+ DIR_PPP_DEV := $(CURDIR)/debian/ppp-dev
+@@ -79,14 +80,14 @@
  
  override_dh_auto_build-arch: changelog-from-README
  	dh_auto_build -- \
@@ -20,9 +17,9 @@ diff -Nru ppp-2.4.7/debian/rules ppp-2.4.7/debian/rules
 +		COPTS="$(CFLAGS) $(CPPFLAGS)" LDOPTS="$(LDFLAGS)" CC="$(CC)"
  	dh_auto_build -Dpppd-udeb/ -- \
  		COPTS="$(CFLAGS) $(CPPFLAGS) -Os -fomit-frame-pointer" \
- 		LDOPTS="$(LDFLAGS)" \
--		$(UDEB_MAKEOPTS)
-+		$(UDEB_MAKEOPTS) CC="$(CC)"
+-		LDOPTS="$(LDFLAGS)" \
++		LDOPTS="$(LDFLAGS)" CC="$(CC)" \
+ 		$(UDEB_MAKEOPTS)
  	dh_auto_build -Dpppd-udeb/plugins -- \
  		COPTS="$(CFLAGS) $(CPPFLAGS) -Os -fomit-frame-pointer" \
 -		LDOPTS="$(LDFLAGS)" \

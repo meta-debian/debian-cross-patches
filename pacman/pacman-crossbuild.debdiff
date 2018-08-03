@@ -1,27 +1,45 @@
 diff -u pacman-10/debian/rules pacman-10/debian/rules
 --- pacman-10/debian/rules
 +++ pacman-10/debian/rules
-@@ -6,6 +6,14 @@
+@@ -6,6 +6,8 @@
  # Uncomment this to turn on verbose mode.
  #export DH_VERBOSE=1
  
-+ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
-+	CXX=$(DEB_HOST_GNU_TYPE)-g++
-+	CCLINK=$(DEB_HOST_GNU_TYPE)-g++
-+else
-+	CXX=g++
-+	CCLINK=g++
-+endif
++include /usr/share/dpkg/buildtools.mk
 +
  CFLAGS = -Wall -g
  
  ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-@@ -21,7 +29,7 @@
+@@ -21,7 +23,7 @@
  build-stamp:
  	dh_testdir
  	xmkmf -a
 -	$(MAKE)
-+	$(MAKE) CXX=$(CXX) CCLINK=$(CCLINK)
++	$(MAKE) CC="$(CC)" CXX="$(CXX)"
  	touch build-stamp
  
  clean:
+--- pacman-10/debian/patches/series
++++ pacman-10/debian/patches/series
+@@ -0,0 +1 @@
++use-CXX-instead-g++.patch
+--- pacman-10/debian/source/format
++++ pacman-10/debian/source/format
+@@ -1 +1 @@
+-1.0
++3.0 (quilt)
+--- pacman-10/debian/patches/use-CXX-instead-g++.patch
++++ pacman-10/debian/patches/use-CXX-instead-g++.patch
+@@ -0,0 +1,12 @@
++diff -Nuar pacman-10.orig/Imakefile pacman-10/Imakefile
++--- pacman-10.orig/Imakefile	2018-08-01 11:09:26.083350144 +0700
+++++ pacman-10/Imakefile	2018-08-01 11:08:50.439349650 +0700
++@@ -22,7 +22,7 @@
++ 
++ /* most X11 screens are rather large, you might wisht to use "double" mode */
++ CXXEXTRA_DEFINES = -DDOUBLE -fno-rtti -fno-exceptions -fPIC
++-CCLINK = g++
+++CCLINK = $(CXX)
++ 
++ NormalProgramTarget(pacman,$(OBJS),$(DEPXLIB),$(CURSES),$(XLIB))
++ InstallProgram(pacman,$(BINDIR))

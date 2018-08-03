@@ -1,14 +1,21 @@
 diff -u mbw-1.2.2/debian/rules mbw-1.2.2/debian/rules
 --- mbw-1.2.2/debian/rules
 +++ mbw-1.2.2/debian/rules
-@@ -9,6 +9,10 @@
+@@ -9,6 +9,8 @@
  # Uncomment this to turn on verbose mode.
  #export DH_VERBOSE=1
  
-+ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
-+export	CC = $(DEB_HOST_GNU_TYPE)-gcc
-+endif
++include /usr/share/dpkg/buildtools.mk
 +
  CFLAGS = -Wall -g
  
  ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+@@ -24,7 +26,7 @@
+ 	dh_testdir
+ 
+ 	# Add here commands to compile the package.
+-	CFLAGS="$(CFLAGS)" $(MAKE)
++	CFLAGS="$(CFLAGS)" $(MAKE) CC="$(CC)"
+ 	#docbook-to-man debian/mbw.sgml > mbw.1
+ 
+ 	touch $@
