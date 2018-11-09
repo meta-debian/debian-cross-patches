@@ -1,0 +1,12 @@
+diff -Nuar origin/libticonv-1.1.5/debian/control libticonv-1.1.5/debian/control
+--- origin/libticonv-1.1.5/debian/control	2018-05-22 21:54:53.000000000 +0700
++++ libticonv-1.1.5/debian/control	2018-08-15 09:52:58.344050305 +0700
+@@ -5,7 +5,7 @@
+ Build-Depends: debhelper (>= 11.0.0),
+                libglib2.0-dev,
+                pkg-config,
+-               tfdocgen
++               tfdocgen:native
+ Standards-Version: 4.1.4
+ Section: libs
+ Homepage: http://lpg.ticalc.org/prj_tilp/
