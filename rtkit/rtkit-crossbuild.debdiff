@@ -1,0 +1,29 @@
+diff -Nru rtkit-0.11/debian/rtkit.postinst rtkit-0.11/debian/rtkit.postinst
+--- rtkit-0.11/debian/rtkit.postinst	2018-02-16 23:59:32.000000000 +0700
++++ rtkit-0.11/debian/rtkit.postinst	2018-02-16 23:59:32.000000000 +0700
+@@ -3,6 +3,11 @@
+ 
+ set -e
+ 
++/usr/lib/rtkit/rtkit-daemon --introspect > org.freedesktop.RealtimeKit1.xml
++chmod 644 org.freedesktop.RealtimeKit1.xml
++mkdir -p /usr/share/dbus-1/interfaces/
++mv org.freedesktop.RealtimeKit1.xml /usr/share/dbus-1/interfaces/org.freedesktop.RealtimeKit1.xml
++
+ case "$1" in
+   configure)
+     if ! getent passwd rtkit >/dev/null; then
+diff -Nru rtkit-0.11/debian/rules rtkit-0.11/debian/rules
+--- rtkit-0.11/debian/rules	2018-02-16 23:59:32.000000000 +0700
++++ rtkit-0.11/debian/rules	2018-02-16 23:59:32.000000000 +0700
+@@ -22,10 +22,7 @@
+ 
+ override_dh_auto_install:
+ 	dh_auto_install
+-	./rtkit-daemon --introspect > org.freedesktop.RealtimeKit1.xml
+-	install -m 644 -D org.freedesktop.RealtimeKit1.xml $(CURDIR)/debian/rtkit/usr/share/dbus-1/interfaces/org.freedesktop.RealtimeKit1.xml
+ 	install -m 755 rtkit-test $(CURDIR)/debian/rtkit/usr/lib/rtkit/rtkit-test
+ 
+ override_dh_auto_clean:
+ 	dh_auto_clean
+-	rm -f org.freedesktop.RealtimeKit1.xml

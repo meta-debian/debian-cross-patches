@@ -1,36 +1,64 @@
-diff -u leaktracer-2.4/debian/rules leaktracer-2.4/debian/rules
---- leaktracer-2.4/debian/rules
-+++ leaktracer-2.4/debian/rules
-@@ -4,6 +4,12 @@
+diff -Nuar leaktracer-2.4/debian/rules leaktracer-2.4/debian/rules
+--- leaktracer-2.4.orig/debian/rules	2018-08-01 14:49:41.327533293 +0700
++++ leaktracer-2.4/debian/rules	2018-08-01 14:59:39.843541587 +0700
+@@ -4,6 +4,8 @@
  # based on sample debian/rules that uses debhelper.
  # GNU copyright 1997 to 1999 by Joey Hess.
  
-+export CXX = g++
-+
-+ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
-+	CXX = $(DEB_HOST_GNU_TYPE)-g++
-+endif
++include /usr/share/dpkg/buildtools.mk
 +
  CFLAGS=-Wall -W -g
  ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
    CFLAGS += -O0
---- leaktracer-2.4.orig/debian/patches/remove-hardcode-g++.patch
-+++ leaktracer-2.4/debian/patches/remove-hardcode-g++.patch
-@@ -0,0 +1,9 @@
+@@ -21,7 +23,7 @@
+ build-stamp: debian/LeakTracer.1
+ 	dh_testdir
+ 
+-	$(MAKE) CFLAGS="${CFLAGS}"
++	$(MAKE) CFLAGS="${CFLAGS}" CXX="$(CXX)"
+ 	[ $(NOCHECK) = 1 ] || $(MAKE) test
+ 
+ 	touch build-stamp
+diff -Nuar leaktracer-2.4/debian/patches/series leaktracer-2.4/debian/patches/series
+--- leaktracer-2.4.orig/debian/patches/series	1970-01-01 08:00:00.000000000 +0800
++++ leaktracer-2.4/debian/patches/series	2018-08-01 14:58:51.127540912 +0700
+@@ -0,0 +1 @@
++use-CXX-instead-g++.patch
+diff -Nuar leaktracer-2.4/debian/patches/use-CXX-instead-g++.patch leaktracer-2.4/debian/patches/use-CXX-instead-g++.patch
+--- leaktracer-2.4/debian/patches/use-CXX-instead-g++.patch	1970-01-01 08:00:00.000000000 +0800
++++ leaktracer-2.4/debian/patches/use-CXX-instead-g++.patch	2018-08-01 14:58:51.127540912 +0700
+@@ -0,0 +1,29 @@
 +diff -Nuar leaktracer-2.4.orig/Makefile leaktracer-2.4/Makefile
-+--- leaktracer-2.4.orig/Makefile	2018-07-23 14:48:34.364755673 +0700
-++++ leaktracer-2.4/Makefile	2018-07-23 14:49:00.624756037 +0700
-+@@ -1,4 +1,4 @@
++--- leaktracer-2.4.orig/Makefile	2018-08-01 14:44:10.219528704 +0700
+++++ leaktracer-2.4/Makefile	2018-08-01 14:43:56.499528514 +0700
++@@ -1,5 +1,3 @@
 +-CC = g++
-++CC = $(CXX)
-+ 
++-
 + # Source files
 + SRC := LeakTracer.cc
---- leaktracer-2.4.orig/debian/source/format
-+++ leaktracer-2.4/debian/source/format
++ 
++@@ -36,16 +34,16 @@
++ 	(cd .. && tar cvfz  /u/erwin/drylock/LeakTracer/LeakTracer.tar.gz -X LeakTracer/.tarexcl  LeakTracer/)
++ 
++ $(OBJ_DIR)/%.o: %.cc
++-	$(CC) -fPIC -c $(C_FLAGS) $< -o $@
+++	$(CXX) -fPIC -c $(C_FLAGS) $< -o $@
++ 
++ $(OBJ_DIR)/%.so : $(OBJ_DIR)/%.o
++-	$(CC) $(O_FLAGS) -shared -o $@ $<
+++	$(CXX) $(O_FLAGS) -shared -o $@ $<
++ 
++ README.html: README
++ 	/u/erwin/ed/mcl/util/htmlize.pl README
++ 
++ test:
++-	$(CC) $(C_FLAGS) test.cc -o test
+++	$(CXX) $(C_FLAGS) test.cc -o test
++ 	./test
++ 	./LeakCheck ./test
++ 	./leak-analyze ./test
+diff -Nuar leaktracer-2.4/debian/source/format leaktracer-2.4/debian/source/format
+--- leaktracer-2.4.orig/debian/source/format	1970-01-01 08:00:00.000000000 +0800
++++ leaktracer-2.4/debian/source/format	2018-08-01 14:58:51.127540912 +0700
 @@ -0,0 +1 @@
 +3.0 (quilt)
---- leaktracer-2.4.orig/debian/patches/series
-+++ leaktracer-2.4/debian/patches/series
-@@ -0,0 +1 @@
-+remove-hardcode-g++.patch
