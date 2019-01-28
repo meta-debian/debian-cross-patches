@@ -127,8 +127,51 @@ cd <source code dir>
 patch -p1 < path/to/patch/file
 ```
 
+## Submit patch
+A patch can be submited by sending it to `submit@bugs.debian.org` or `<number>@bugs.debian.org` if the bug report has already been filed.  
+When submit a patch, the below information should be described at the first part of report:
+```
+Source: <name of source package>
+Version: <version of package>
+Tags: patch
+Severity: <critical|grave|serious|important|normal|minor|wishlist>
+```
+
+
+Also, for easy tracking of cross build bugs, some Usertags may be added. Use one of these tags:
+- For general cross/bootstrap bugs:
+   ```
+   User: helmutg@debian.org
+   Usertags: rebootstrap
+   ```
+
+- For bugs where Build-Depends are cross-installable, but the cross-build fails:
+    ```
+    User: debian-cross@lists.debian.org
+    Usertags: ftcbfs
+    ```
+
+- For bugs about packages that fail to satisfy their cross Build-Depends or that cause other packages to fail dependency satisfaction:
+   ```
+   User: debian-cross@lists.debian.org
+   Usertags: cross-satisfiability
+   ```
+
+Example:
+```
+Source: coreutils
+Version: 8.28-1
+Severity: normal
+Tags: patch
+User: helmutg@debian.org
+Usertags: rebootstrap
+```
+You can see the discussion about these tags at <https://lists.debian.org/debian-cross/2018/07/msg00001.html>
+
 # References
 
 <https://wiki.debian.org/sbuild>
 
 <https://wiki.debian.org/CrossCompiling>
+
+<https://www.debian.org/Bugs/Reporting>
