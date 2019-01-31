@@ -1,0 +1,19 @@
+diff -Nru elph-1.0.1/debian/rules elph-1.0.1/debian/rules
+--- elph-1.0.1/debian/rules	2018-08-31 18:28:05.000000000 +0700
++++ elph-1.0.1/debian/rules	2018-09-05 17:42:03.000000000 +0700
+@@ -4,13 +4,13 @@
+ 
+ #export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+ #export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+-
++include /usr/share/dpkg/buildtools.mk
+ 
+ %:
+ 	dh $@
+ 
+ override_dh_auto_build:
+-	$(MAKE) -C sources all
++	$(MAKE) CXX="$(CXX)" LINKER="$(CXX)" -C sources all
+ 	help2man -h "-h" -n ELPH --version-string=1.0.1 --no-discard-stderr  sources/elph > debian/elph.1
+ 
+ override_dh_auto_clean:

@@ -1,0 +1,38 @@
+diff -Nru infnoise-0.3.0+dfsg/debian/control infnoise-0.3.0+dfsg/debian/control
+--- infnoise-0.3.0+dfsg/debian/control	2018-10-14 01:53:54.000000000 +0700
++++ infnoise-0.3.0+dfsg/debian/control	2018-10-21 04:03:42.000000000 +0700
+@@ -5,6 +5,7 @@
+ Build-Depends:
+  debhelper (>= 11~),
+  libftdi-dev,
++ libftdi1-dev,
+ Standards-Version: 4.2.1
+ Homepage: https://github.com/13-37-org/infnoise
+ Vcs-Browser: https://salsa.debian.org/debian/infnoise
+diff -Nru infnoise-0.3.0+dfsg/debian/rules infnoise-0.3.0+dfsg/debian/rules
+--- infnoise-0.3.0+dfsg/debian/rules	2018-10-21 03:31:09.000000000 +0700
++++ infnoise-0.3.0+dfsg/debian/rules	2018-10-21 04:03:42.000000000 +0700
+@@ -2,6 +2,7 @@
+ 
+ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+ 
++include /usr/share/dpkg/buildtools.mk
+ include /usr/share/dpkg/buildflags.mk
+ include /usr/share/dpkg/pkg-info.mk
+ 
+@@ -9,12 +10,12 @@
+ 	dh $@ -Dsoftware
+ 
+ override_dh_auto_clean:
+-	make -C software -f Makefile.linux clean
++	make CC="$(CC)" -C software -f Makefile.linux clean
+ 	dh_auto_clean -Dsoftware/tools
+ 
+ override_dh_auto_build:
+-	make -C software -f Makefile.linux CFLAGS="$(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -fPIC -IKeccak -DGIT_VERSION=\\\"$(DEB_VERSION_UPSTREAM)\\\" -DGIT_COMMIT=\\\"Debian\\\" -DGIT_DATE=\\\"$(shell date --utc +%FT%T%:z -d @$(SOURCE_DATE_EPOCH))\\\""
+-	dh_auto_build -Dsoftware/tools -- CFLAGS="$(CPPFLAGS) $(CFLAGS) $(LDFLAGS)"
++	make CC="$(CC)" -C software -f Makefile.linux CFLAGS="$(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -fPIC -IKeccak -DGIT_VERSION=\\\"$(DEB_VERSION_UPSTREAM)\\\" -DGIT_COMMIT=\\\"Debian\\\" -DGIT_DATE=\\\"$(shell date --utc +%FT%T%:z -d @$(SOURCE_DATE_EPOCH))\\\""
++	dh_auto_build -Dsoftware/tools -- CFLAGS="$(CPPFLAGS) $(CFLAGS) $(LDFLAGS)" CC="$(CC)"
+ 
+ override_dh_auto_configure:
+ # Copy various files so that debhelper tools can process them

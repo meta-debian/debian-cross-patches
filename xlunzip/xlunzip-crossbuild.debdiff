@@ -1,0 +1,10 @@
+diff -Nru xlunzip-0.3/debian/rules xlunzip-0.3/debian/rules
+--- xlunzip-0.3/debian/rules	2018-08-26 14:58:02.000000000 +0700
++++ xlunzip-0.3/debian/rules	2018-08-26 14:58:02.000000000 +0700
+@@ -1,5 +1,5 @@
+ #!/usr/bin/make -f
+-
++include /usr/share/dpkg/buildtools.mk
+ %:
+ 	dh ${@}
+ 

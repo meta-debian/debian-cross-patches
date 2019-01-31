@@ -1,0 +1,18 @@
+diff -u titantools-4.0.11+notdfsg1/debian/rules titantools-4.0.11+notdfsg1/debian/rules
+--- titantools-4.0.11+notdfsg1/debian/rules
++++ titantools-4.0.11+notdfsg1/debian/rules
+@@ -2,12 +2,13 @@
+ 
+ # Uncomment this to turn on verbose mode.
+ #export DH_VERBOSE=1
++include /usr/share/dpkg/buildtools.mk
+ 
+ %:
+ 	dh $@
+ 
+ override_dh_auto_build:
+-	$(MAKE) -f Makefile.linux
++	$(MAKE) CC="$(CC)" -f Makefile.linux
+ 	/usr/bin/docbook-to-man debian/noshell.sgml > noshell.1
+ 	/usr/bin/docbook-to-man debian/runas.sgml > runas.8
+ 

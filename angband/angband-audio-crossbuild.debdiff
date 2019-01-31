@@ -1,0 +1,12 @@
+diff -Nru angband-audio-3.1.0/debian/control angband-audio-3.1.0/debian/control
+--- angband-audio-3.1.0/debian/control	2015-02-10 05:58:24.000000000 +0700
++++ angband-audio-3.1.0/debian/control	2015-02-04 15:10:02.000000000 +0700
+@@ -2,7 +2,7 @@
+ Section: non-free/games
+ Priority: optional
+ Maintainer: Chris Carr <rantingman@gmail.com>
+-Build-Depends: vorbis-tools, debhelper (>= 8.0.0)
++Build-Depends: vorbis-tools:native, debhelper (>= 8.0.0)
+ Standards-Version: 3.9.6
+ Homepage: http://www.dubtrain.com/angband
+ 

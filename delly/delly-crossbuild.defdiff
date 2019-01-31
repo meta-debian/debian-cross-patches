@@ -1,0 +1,19 @@
+diff -Nru delly-0.7.9/debian/rules delly-0.7.9/debian/rules
+--- delly-0.7.9/debian/rules	2018-12-02 23:12:30.000000000 +0700
++++ delly-0.7.9/debian/rules	2018-12-02 23:12:30.000000000 +0700
+@@ -3,13 +3,13 @@
+ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+ export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+ export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+-
++include /usr/share/dpkg/buildtools.mk
+ 
+ %:
+ 	dh $@
+ 
+ override_dh_auto_build:
+-	$(MAKE) BUILT_PROGRAMS="src/delly src/dpe"
++	$(MAKE) CXX="$(CXX)" BUILT_PROGRAMS="src/delly src/dpe"
+ 	chrpath -d src/dpe src/delly
+ 
+ override_dh_auto_install:

@@ -1,0 +1,12 @@
+diff -Nru efp-1.6/debian/control efp-1.6/debian/control
+--- efp-1.6/debian/control	2018-05-29 09:20:47.000000000 +0700
++++ efp-1.6/debian/control	2018-05-29 09:22:50.000000000 +0700
+@@ -2,7 +2,7 @@
+ Section: games
+ Priority: optional
+ Maintainer: Nicolas Boulenguez <nicolas@debian.org>
+-Build-Depends: debhelper (>= 11), xa65
++Build-Depends: debhelper (>= 11), xa65:native
+ Standards-Version: 4.1.4
+ Homepage: https://hcs64.com/efp.html
+ 
