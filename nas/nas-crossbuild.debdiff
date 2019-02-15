@@ -1,21 +1,12 @@
 diff -Nru nas-1.9.4/debian/rules nas-1.9.4/debian/rules
 --- nas-1.9.4/debian/rules	2014-11-11 01:09:37.000000000 +0700
 +++ nas-1.9.4/debian/rules	2017-08-03 04:29:44.000000000 +0700
-@@ -1,6 +1,8 @@
- #! /usr/bin/make -f
- # debian/rules file for NAS
- 
-+include /usr/share/dpkg/buildtools.mk
-+
- DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
- 
- instdirs=BINDIR=/usr/bin USRLIBDIR=/usr/lib/$(DEB_HOST_MULTIARCH) MANPATH=/usr/share/man INCDIR=/usr/include PROJECTMANSUFFIX=nas ETCDIR=/etc/nas
-@@ -12,7 +14,7 @@
+@@ -12,7 +12,7 @@
  	xmkmf -a
  
  override_dh_auto_build:
 -	$(MAKE) EXTRA_LDOPTIONS="$$LDFLAGS" \
-+	$(MAKE) CC="$(CC)" EXTRA_LDOPTIONS="$$LDFLAGS" \
++	dh_auto_build -- EXTRA_LDOPTIONS="$$LDFLAGS" \
  		CCOPTIONS="$$CFLAGS $$CPPFLAGS" \
  		LDFLAGS_DEF="$$LDFLAGS"
  
