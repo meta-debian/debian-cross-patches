@@ -29,7 +29,7 @@ We often use `dpkg-buildpackage` and `sbuild` to cross build a Debian package.
 
   ```sh
   cd <package>-<version>
-  CONFIG_SITE=/etc/dpkg-cross/cross-config.armhf DEB_BUILD_OPTIONS=nocheck dpkg-buildpackage -aarmhf
+  DEB_BUILD_OPTIONS=nocheck dpkg-buildpackage -aarmhf
   ```
 
 ### Cross build with sbuild
