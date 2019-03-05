@@ -1,0 +1,12 @@
+diff -u titantools-4.0.11+notdfsg1/debian/rules titantools-4.0.11+notdfsg1/debian/rules
+--- titantools-4.0.11+notdfsg1/debian/rules
++++ titantools-4.0.11+notdfsg1/debian/rules
+@@ -7,7 +7,7 @@
+ 	dh $@
+ 
+ override_dh_auto_build:
+-	$(MAKE) -f Makefile.linux
++	dh_auto_build -- -f Makefile.linux
+ 	/usr/bin/docbook-to-man debian/noshell.sgml > noshell.1
+ 	/usr/bin/docbook-to-man debian/runas.sgml > runas.8
+ 

@@ -1,21 +1,12 @@
 diff -u socket-1.1/debian/rules socket-1.1/debian/rules
 --- socket-1.1/debian/rules
 +++ socket-1.1/debian/rules
-@@ -6,6 +6,8 @@
- # Uncomment this to turn on verbose mode.
- #export DH_VERBOSE=1
- 
-+include /usr/share/dpkg/buildtools.mk
-+
- configure: configure-stamp
- configure-stamp:
- 	dh_testdir
-@@ -14,7 +16,7 @@
+@@ -14,7 +14,7 @@
  build: configure-stamp build-stamp
  build-stamp:
  	dh_testdir
 -	$(MAKE)
-+	$(MAKE) CC="$(CC)"
++	dh_auto_build	
  	touch build-stamp
  
  clean:

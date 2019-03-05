@@ -1,0 +1,23 @@
+diff -Nru xsnow-1.42/debian/rules xsnow-1.42/debian/rules
+--- xsnow-1.42/debian/rules	2012-03-05 08:04:31.000000000 +0700
++++ xsnow-1.42/debian/rules	2012-03-05 07:57:31.000000000 +0700
+@@ -10,7 +10,7 @@
+ 
+ # Uncomment this to turn on verbose mode.
+ #export DH_VERBOSE=1
+-
++include /usr/share/dpkg/buildtools.mk
+ 
+ DESTDIR=$(CURDIR)/debian/xsnow
+ BINDIR=/usr/games
+@@ -32,8 +32,8 @@
+ 	dh_testdir
+ 
+ 	xmkmf
+-	$(MAKE) depend
+-	$(MAKE) CDEBUGFLAGS="$(CFLAGS)"
++	$(MAKE) depend CC="$(CC)"
++	$(MAKE) CDEBUGFLAGS="$(CFLAGS)" CC="$(CC)"
+ 
+ 	touch build-stamp
+ 

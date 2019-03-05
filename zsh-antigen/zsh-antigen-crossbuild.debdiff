@@ -1,0 +1,12 @@
+diff -Nru zsh-antigen-2.2.3/debian/control zsh-antigen-2.2.3/debian/control
+--- zsh-antigen-2.2.3/debian/control	2018-08-28 13:58:23.000000000 +0700
++++ zsh-antigen-2.2.3/debian/control	2018-08-28 13:58:23.000000000 +0700
+@@ -4,7 +4,7 @@
+ Priority: optional
+ Build-Depends:
+  debhelper (>= 11),
+- zsh,
++ zsh:native,
+ Standards-Version: 4.2.1
+ Vcs-Browser: https://salsa.debian.org/fladi/zsh-antigen
+ Vcs-Git: https://salsa.debian.org/fladi/zsh-antigen.git

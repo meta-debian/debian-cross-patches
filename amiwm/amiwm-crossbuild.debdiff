@@ -1,0 +1,29 @@
+diff -Nru amiwm-0.21pl2/debian/rules amiwm-0.21pl2/debian/rules
+--- amiwm-0.21pl2/debian/rules	2015-11-27 13:58:21.000000000 +0700
++++ amiwm-0.21pl2/debian/rules	2018-02-08 21:06:59.000000000 +0700
+@@ -4,6 +4,7 @@
+ 
+ # Uncomment this to turn on verbose mode.
+ #export DH_VERBOSE=1
++include /usr/share/dpkg/buildtools.mk
+ 
+ build: build-arch build-indep
+ build-arch: build-stamp
+@@ -12,7 +13,7 @@
+ build-stamp:
+ 	dh_testdir
+ 	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
+-	$(MAKE)
++	$(MAKE) CC="$(CC)"
+ 	touch build-stamp
+ 
+ clean:
+@@ -28,7 +29,7 @@
+ 	dh_testroot
+ 	dh_prep
+ 	dh_installdirs
+-	$(MAKE) install prefix=$(CURDIR)/debian/amiwm/usr DESTDIR=$(CURDIR)/debian/amiwm
++	$(MAKE) install prefix=$(CURDIR)/debian/amiwm/usr DESTDIR=$(CURDIR)/debian/amiwm STRIPFLAG="-s --strip-program=$(DEB_HOST_MULTIARCH)-strip"
+ 	cp debian/dotamiwmrc.example debian/amiwm/usr/share/doc/amiwm/examples/dotamiwmrc
+ 	cp debian/amiwm.desktop debian/amiwm/usr/share/xsessions/
+ 	sed s,/ksh,/bash, Xinitrc > debian/amiwm/usr/lib/amiwm/Xinitrc

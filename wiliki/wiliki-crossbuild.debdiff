@@ -1,0 +1,12 @@
+diff -Nru wiliki-0.6.2/debian/control wiliki-0.6.2/debian/control
+--- wiliki-0.6.2/debian/control	2011-10-03 22:59:26.000000000 +0700
++++ wiliki-0.6.2/debian/control	2011-10-03 23:00:15.000000000 +0700
+@@ -2,7 +2,7 @@
+ Section: web
+ Priority: optional
+ Maintainer: YAEGASHI Takeshi <yaegashi@debian.org>
+-Build-Depends: debhelper (>= 7.0.50~), gauche-dev, gauche-gdbm
++Build-Depends: debhelper (>= 7.0.50~), gauche-dev:native, gauche-gdbm:native
+ Standards-Version: 3.9.1
+ Homepage: http://practical-scheme.net/wiliki/wiliki.cgi
+ Vcs-Git: git://git.debian.org/users/yaegashi/wiliki.git

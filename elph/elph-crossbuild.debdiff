@@ -1,0 +1,20 @@
+diff -Nru elph-1.0.1/debian/rules elph-1.0.1/debian/rules
+--- elph-1.0.1/debian/rules	2018-08-31 18:28:05.000000000 +0700
++++ elph-1.0.1/debian/rules	2018-09-05 17:42:03.000000000 +0700
+@@ -1,4 +1,7 @@
+ #!/usr/bin/make -f
++
++include /usr/share/dpkg/buildtools.mk
++
+ export DH_VERBOSE = 1
+ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+ 
+@@ -10,7 +13,7 @@
+ 	dh $@
+ 
+ override_dh_auto_build:
+-	$(MAKE) -C sources all
++	dh_auto_build -Dsources -- LINKER="$(CXX)" all
+ 	help2man -h "-h" -n ELPH --version-string=1.0.1 --no-discard-stderr  sources/elph > debian/elph.1
+ 
+ override_dh_auto_clean:

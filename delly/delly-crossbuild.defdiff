@@ -1,0 +1,12 @@
+diff -Nru delly-0.8.1/debian/rules delly-0.8.1/debian/rules
+--- delly-0.8.1/debian/rules	2019-02-05 15:17:08.000000000 +0700
++++ delly-0.8.1/debian/rules	2019-02-05 15:17:08.000000000 +0700
+@@ -9,7 +9,7 @@
+ 	dh $@
+ 
+ override_dh_auto_build:
+-	$(MAKE) BUILT_PROGRAMS="src/delly src/dpe"
++	dh_auto_build -- BUILT_PROGRAMS="src/delly src/dpe"
+ 	chrpath -d src/dpe src/delly
+ 
+ override_dh_auto_install:
